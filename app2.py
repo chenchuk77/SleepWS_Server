@@ -6,8 +6,11 @@ import sys
 from datetime import datetime
 import os
 
-current_milli_time = lambda: int(round(time.time() * 1000))
+epoch = lambda: int(round(time.time() * 1000))
 data = {}
+# initialize counter
+# counter = 0 if len(data) == 0 else len(data)
+
 
 app = Flask(__name__)
 
@@ -21,12 +24,13 @@ def get_ping():
 def get_all():
     return jsonify({'data': data})
 
-@app.route('/sleepws/sleep/<timestamp>', methods=['GET'])
-def add_sleep_record(timestamp):
-    data[timestamp]='sleep'
-    return jsonify({'sleep': timestamp})
+@app.route('/sleepws/addrecord/<json>', methods=['GET'])
+def add_record(json):
+    msec = epoch()
+    data[msec] = json
+    return jsonify({msec: json})
 
-@app.route('/sleepws/wakeup/<timestamp>', methods=['GET'])
+@app.route('/sleepws/wakeup/<json>', methods=['GET'])
 def add_wakeup_record(timestamp):
     data[timestamp]='wakeup'
     return jsonify({'wakeup': timestamp})
